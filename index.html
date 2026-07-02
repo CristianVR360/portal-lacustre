@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Lacustre | Proyecto Habitacional Exclusivo en Villarrica</title>
+  <meta name="description" content="Próximamente, el mejor proyecto habitacional de la zona lacustre. Parcelas de 5.000 m² con urbanización soterrada, fibra óptica y acceso controlado en Villarrica.">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Cormorant Garamond"', 'serif'],
+          },
+          colors: {
+            forest: {
+              DEFAULT: '#10b981',
+              light: '#34d399',
+              deep: '#064e3b',
+              dark: '#05140b',
+            },
+            lake: {
+              DEFAULT: '#38bdf8',
+              light: '#7dd3fc',
+              deep: '#0369a1',
+            },
+            volcano: '#ffffff'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom CSS Link -->
+  <link rel="stylesheet" href="index.css">
+  
+  <!-- Phosphor Icons Light -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="relative min-h-screen selection:bg-emerald-900/50 selection:text-emerald-200 text-slate-200 bg-forest-dark">
+
+  <!-- Grain noise texture -->
+  <div class="grain-overlay"></div>
+
+  <!-- Floating Navigation Island -->
+  <nav class="fixed top-0 left-0 right-0 z-50 px-4 md:px-8 py-6">
+    <div class="max-w-7xl mx-auto flex items-center justify-between bg-black/40 border border-white/10 backdrop-blur-xl rounded-full px-6 py-3.5 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+      
+      <!-- Text Logo -->
+      <a href="#inicio" class="text-xl md:text-2xl font-serif font-light tracking-wide text-white flex items-center gap-2 hover:opacity-85 transition-all duration-300">
+        PORTAL <span class="text-lake font-normal">LACUSTRE</span>
+      </a>
+
+      <!-- Desktop Links -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#inicio" class="text-xs uppercase tracking-widest text-neutral-300 hover:text-white transition-colors duration-300">Inicio</a>
+        <a href="#caracteristicas" class="text-xs uppercase tracking-widest text-neutral-300 hover:text-white transition-colors duration-300">Características</a>
+        <a href="#contacto" class="text-xs uppercase tracking-widest text-neutral-300 hover:text-white transition-colors duration-300">Contacto</a>
+      </div>
+
+      <!-- Desktop CTA Button-in-Button -->
+      <div class="hidden md:block">
+        <a href="#contacto" class="group relative inline-flex items-center justify-between gap-4 bg-white text-black hover:bg-neutral-100 rounded-full px-6 py-2 text-xs font-semibold uppercase tracking-widest transition-custom active:scale-95 shadow-md">
+          <span>Contacto</span>
+          <span class="w-6 h-6 rounded-full bg-black/5 flex items-center justify-center transition-custom group-hover:translate-x-1 group-hover:-translate-y-[1px] group-hover:scale-105">
+            <i class="ph-light ph-arrow-up-right text-xs text-black"></i>
+          </span>
+        </a>
+      </div>
+
+      <!-- Mobile Hamburger Button -->
+      <button id="menu-toggle" class="md:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5 focus:outline-none" aria-label="Menu">
+        <span class="hamburger-line hamburger-line-1 w-5 h-[1.5px] bg-white rounded-full"></span>
+        <span class="hamburger-line hamburger-line-2 w-5 h-[1.5px] bg-white rounded-full"></span>
+        <span class="hamburger-line hamburger-line-3 w-5 h-[1.5px] bg-white rounded-full"></span>
+      </button>
+
+    </div>
+  </nav>
+
+  <!-- Mobile Overlay Menu -->
+  <div id="mobile-menu" class="fixed inset-0 z-40 bg-black/95 backdrop-blur-2xl flex flex-col justify-center items-center gap-8 opacity-0 pointer-events-none transition-custom">
+    <a href="#inicio" class="mobile-menu-link text-3xl font-serif text-white translate-y-12 opacity-0 transition-custom">Inicio</a>
+    <a href="#caracteristicas" class="mobile-menu-link text-3xl font-serif text-white translate-y-12 opacity-0 transition-custom">Características</a>
+    <a href="#contacto" class="mobile-menu-link text-3xl font-serif text-white translate-y-12 opacity-0 transition-custom">Contacto</a>
+    <a href="#contacto" class="mobile-menu-link mt-8 bg-white text-black rounded-full px-8 py-3 text-sm font-semibold uppercase tracking-wider translate-y-12 opacity-0 transition-custom">Contacto</a>
+  </div>
+
+  <!-- Hero Section with Background Video inside only -->
+  <header id="inicio" class="relative min-h-[100dvh] flex flex-col justify-center items-center px-4 pt-20 overflow-hidden">
+    
+    <!-- Background Video / Image Container inside Hero -->
+    <div class="absolute inset-0 w-full h-full -z-10 overflow-hidden bg-black">
+      <video 
+        autoplay 
+        loop 
+        muted 
+        playsinline 
+        poster="asstets/img/DJI_0127.jpg" 
+        class="object-cover w-full h-full opacity-80"
+      >
+        <source src="asstets/video/sitebkg.mp4" type="video/mp4">
+      </video>
+      <!-- Highly transparent dark overlay to keep the video extremely visible while protecting text contrast -->
+      <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/25 to-black/70"></div>
+    </div>
+
+    <!-- Ambient Light Orbs (Only on Hero for depth) -->
+    <div class="glow-orb top-[20%] left-[-10%] opacity-25"></div>
+
+    <div class="max-w-5xl mx-auto text-center z-10 flex flex-col items-center">
+      
+      <!-- Eyebrow Badge -->
+      <div class="reveal-element inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-950/40 backdrop-blur-md px-4 py-1.5 mb-8 shadow-sm">
+        <span class="w-1.5 h-1.5 rounded-full bg-forest-light animate-pulse"></span>
+        <span class="text-[10px] uppercase tracking-[0.25em] font-semibold text-white">SITIO EN CONSTRUCCIÓN</span>
+      </div>
+
+      <!-- Title / Creative Phrase -->
+      <h1 class="reveal-element delay-100 text-5xl sm:text-7xl md:text-9xl font-light tracking-tight text-white mb-6 leading-[1.05]">
+        PORTAL <span class="font-serif italic font-light text-lake">LACUSTRE</span>
+      </h1>
+      
+      <p class="reveal-element delay-200 text-lg sm:text-2xl font-light text-slate-200 max-w-3xl mb-12 leading-relaxed">
+        Próximamente, el mejor proyecto habitacional de la zona lacustre. Un entorno sublime diseñado para conectar de manera pura con el bosque, el volcán y el lago.
+      </p>
+
+      <!-- CTA Hero Buttons -->
+      <div class="reveal-element delay-300 flex flex-col sm:flex-row items-center gap-4">
+        <a href="#caracteristicas" class="group relative inline-flex items-center justify-between gap-4 bg-white hover:bg-neutral-100 text-slate-900 rounded-full px-8 py-3.5 text-xs font-semibold uppercase tracking-widest transition-custom active:scale-95 w-full sm:w-auto shadow-lg">
+          <span>Descubrir Proyecto</span>
+          <span class="w-7 h-7 rounded-full bg-black/5 flex items-center justify-center transition-custom group-hover:translate-x-1 group-hover:-translate-y-[1px] group-hover:scale-105">
+            <i class="ph-light ph-arrow-down text-xs text-slate-900"></i>
+          </span>
+        </a>
+        <a href="#contacto" class="inline-flex items-center justify-center border border-white/30 hover:border-white/60 bg-white/10 hover:bg-white/20 text-white rounded-full px-8 py-3.5 text-xs font-semibold uppercase tracking-widest transition-custom active:scale-95 w-full sm:w-auto backdrop-blur-sm">
+          Registrar Interés
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-80">
+      <span class="text-[9px] uppercase tracking-[0.3em] text-white/70 font-semibold">Desplazar</span>
+      <div class="w-[1px] h-12 bg-gradient-to-b from-white to-transparent"></div>
+    </div>
+  </header>
+
+  <!-- Features (Bento Grid) Section -->
+  <section id="caracteristicas" class="relative py-24 sm:py-36 px-4 md:px-8 bg-forest-dark">
+    <!-- Extra Ambient Glow inside features -->
+    <div class="glow-orb top-[40%] right-[-10%] opacity-20"></div>
+
+    <div class="max-w-7xl mx-auto relative z-10">
+      
+      <!-- Section Title & Intro -->
+      <div class="max-w-3xl mb-16 sm:mb-24">
+        <span class="text-[10px] uppercase tracking-[0.25em] font-semibold text-lake mb-4 block">NATURALEZA Y EXCLUSIVIDAD</span>
+        <h2 class="text-4xl sm:text-6xl font-light tracking-tight text-white mb-6 leading-tight">
+          Un estándar superior en el sur de Chile.
+        </h2>
+        <p class="text-slate-300 text-lg font-light leading-relaxed">
+          Cada parcela ha sido concebida respetando el entorno y aplicando urbanización subterránea de primer nivel para resguardar la majestuosidad natural de Villarrica.
+        </p>
+      </div>
+
+      <!-- Bento Grid Layout -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+        
+        <!-- Card 1: 5000m2 (Wide Landscape Bento) -->
+        <div class="reveal-element md:col-span-8 double-bezel-outer">
+          <div class="double-bezel-inner flex flex-col justify-between">
+            <div class="flex items-start justify-between mb-8">
+              <span class="text-slate-400 text-sm font-mono font-medium">01 / DIMENSIÓN</span>
+              <div class="w-12 h-12 rounded-full border border-emerald-500/20 flex items-center justify-center bg-emerald-950/40 shadow-sm">
+                <i class="ph-light ph-ruler text-xl text-forest"></i>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-4xl sm:text-6xl font-light text-white mb-3">5.000 m²</h3>
+              <p class="text-slate-300 text-sm font-light max-w-xl">
+                Parcelas limpias y de terrenos planos, con el 100% de la superficie aprovechable para construir, desarrollar y disfrutar tu arquitectura en armonía con el paisaje.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Agua Soterrada -->
+        <div class="reveal-element delay-100 md:col-span-4 double-bezel-outer">
+          <div class="double-bezel-inner flex flex-col justify-between">
+            <div class="flex items-start justify-between mb-8">
+              <span class="text-slate-400 text-sm font-mono font-medium">02 / AGUA</span>
+              <div class="w-12 h-12 rounded-full border border-sky-500/20 flex items-center justify-center bg-sky-950/40 shadow-sm">
+                <i class="ph-light ph-drop text-xl text-lake"></i>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-2xl font-serif text-white mb-2 font-medium">Agua Soterrada</h3>
+              <p class="text-slate-300 text-xs sm:text-sm font-light">
+                Red interna completamente subterránea de agua potable para mantener la armonía de la cuenca lacustre.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Luz Soterrada -->
+        <div class="reveal-element md:col-span-4 double-bezel-outer">
+          <div class="double-bezel-inner flex flex-col justify-between">
+            <div class="flex items-start justify-between mb-8">
+              <span class="text-slate-400 text-sm font-mono font-medium">03 / ELECTRICIDAD</span>
+              <div class="w-12 h-12 rounded-full border border-emerald-500/20 flex items-center justify-center bg-emerald-950/40 shadow-sm">
+                <i class="ph-light ph-lightning text-xl text-forest-light"></i>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-2xl font-serif text-white mb-2 font-medium">Luz Soterrada</h3>
+              <p class="text-slate-300 text-xs sm:text-sm font-light">
+                Canalización eléctrica bajo tierra. Disfruta de la vista limpia de los volcanes, libre de cables aéreos.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Fibra Óptica -->
+        <div class="reveal-element delay-100 md:col-span-4 double-bezel-outer">
+          <div class="double-bezel-inner flex flex-col justify-between">
+            <div class="flex items-start justify-between mb-8">
+              <span class="text-slate-400 text-sm font-mono font-medium">04 / TECNOLOGÍA</span>
+              <div class="w-12 h-12 rounded-full border border-sky-500/20 flex items-center justify-center bg-sky-950/40 shadow-sm">
+                <i class="ph-light ph-globe text-xl text-lake"></i>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-2xl font-serif text-white mb-2 font-medium">Fibra Óptica</h3>
+              <p class="text-slate-300 text-xs sm:text-sm font-light">
+                Conectividad simétrica de alta velocidad para teletrabajar en medio de la naturaleza.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: Caminos Ripiados 6mt -->
+        <div class="reveal-element delay-200 md:col-span-4 double-bezel-outer">
+          <div class="double-bezel-inner flex flex-col justify-between">
+            <div class="flex items-start justify-between mb-8">
+              <span class="text-slate-400 text-sm font-mono font-medium">05 / ACCESO</span>
+              <div class="w-12 h-12 rounded-full border border-emerald-500/20 flex items-center justify-center bg-emerald-950/40 shadow-sm">
+                <i class="ph-light ph-road text-xl text-forest"></i>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-2xl font-serif text-white mb-2 font-medium">Caminos 6mt</h3>
+              <p class="text-slate-300 text-xs sm:text-sm font-light">
+                Amplias vías ripiadas de 6 metros de ancho diseñadas para un tránsito vehicular fluido y estético.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6: Acceso Controlado -->
+        <div class="reveal-element md:col-span-5 double-bezel-outer">
+          <div class="double-bezel-inner flex flex-col justify-between">
+            <div class="flex items-start justify-between mb-8">
+              <span class="text-slate-400 text-sm font-mono font-medium">06 / SEGURIDAD</span>
+              <div class="w-12 h-12 rounded-full border border-sky-500/20 flex items-center justify-center bg-sky-950/40 shadow-sm">
+                <i class="ph-light ph-shield text-xl text-lake"></i>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-2xl font-serif text-white mb-2 font-medium">Acceso Controlado</h3>
+              <p class="text-slate-300 text-xs sm:text-sm font-light">
+                Pórtico de seguridad en el ingreso principal del condominio para el resguardo y privacidad de tu familia.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 7: Tranquilidad (Horizontal Bento) -->
+        <div class="reveal-element delay-100 md:col-span-7 double-bezel-outer">
+          <div class="double-bezel-inner flex flex-col justify-between">
+            <div class="flex items-start justify-between mb-8">
+              <span class="text-slate-400 text-sm font-mono font-medium">07 / ENTORNO</span>
+              <div class="w-12 h-12 rounded-full border border-emerald-500/20 flex items-center justify-center bg-emerald-950/40 shadow-sm">
+                <i class="ph-light ph-wind text-xl text-forest"></i>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-3xl font-serif text-white mb-2 font-medium">Tranquilidad</h3>
+              <p class="text-slate-300 text-sm font-light">
+                Un oasis acústico donde el susurro del viento y la pureza del bosque nativo del sur chileno se convierten en tus vecinos diarios para una desconexión total.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 8: 5 min Villarrica -->
+        <div class="reveal-element md:col-span-6 double-bezel-outer">
+          <div class="double-bezel-inner flex flex-col justify-between">
+            <div class="flex items-start justify-between mb-8">
+              <span class="text-slate-400 text-sm font-mono font-medium">08 / PROXIMIDAD</span>
+              <div class="w-12 h-12 rounded-full border border-sky-500/20 flex items-center justify-center bg-sky-950/40 shadow-sm">
+                <i class="ph-light ph-map-pin text-xl text-lake"></i>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-2xl font-serif text-white mb-2 font-medium">A 5 min de Villarrica</h3>
+              <p class="text-slate-300 text-sm font-light">
+                Ubicación privilegiada que permite fusionar el ritmo natural con la cercanía a colegios, clínicas, gastronomía y servicios urbanos.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 9: Ruta Freire Villarrica -->
+        <div class="reveal-element delay-100 md:col-span-6 double-bezel-outer">
+          <div class="double-bezel-inner flex flex-col justify-between">
+            <div class="flex items-start justify-between mb-8">
+              <span class="text-slate-400 text-sm font-mono font-medium">09 / ACCESIBILIDAD</span>
+              <div class="w-12 h-12 rounded-full border border-emerald-500/20 flex items-center justify-center bg-emerald-950/40 shadow-sm">
+                <i class="ph-light ph-compass text-xl text-forest-light"></i>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-2xl font-serif text-white mb-2 font-medium">Ruta Freire - Villarrica</h3>
+              <p class="text-slate-300 text-sm font-light">
+                Conectividad expedita con la principal ruta de acceso a la cuenca lacustre, facilitando traslados hacia el aeropuerto de Temuco y la cordillera.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Coming Soon Reveal Area -->
+  <section class="relative py-24 bg-black/30 border-t border-white/5 backdrop-blur-md px-4 overflow-hidden">
+    <div class="max-w-4xl mx-auto text-center relative z-10">
+      
+      <span class="text-[10px] uppercase tracking-[0.25em] font-semibold text-lake mb-4 block">SECRETO Y PLAN MAESTRO</span>
+      <h2 class="text-3xl sm:text-5xl font-light text-white mb-8 leading-tight">
+        Lo que está por venir...
+      </h2>
+      
+      <p class="text-slate-300 text-base sm:text-lg font-light leading-relaxed max-w-2xl mx-auto mb-8">
+        Próximamente revelaremos galerías de fotos exclusivas, videos aéreos de alta definición, el <strong class="text-forest-light font-semibold">Master Plan</strong> interactivo y todos los secretos que tiene este maravilloso proyecto en la zona lacustre.
+      </p>
+
+      <!-- Floating Bezel for Coming info -->
+      <div class="reveal-element double-bezel-outer max-w-xl mx-auto">
+        <div class="double-bezel-inner p-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-left">
+          <div>
+            <h4 class="text-lg font-serif text-white mb-1 font-medium">Únete a la Lista de espera</h4>
+            <p class="text-slate-400 text-xs font-light">Recibe actualizaciones previas al lanzamiento oficial.</p>
+          </div>
+          <a href="https://wa.me/56996433990?text=Hola,%20me%20interesa%20unirme%20a%20la%20lista%20de%20espera%20de%20Portal%20Lacustre." target="_blank" rel="noopener noreferrer" class="bg-white hover:bg-neutral-100 text-slate-900 rounded-full px-6 py-2.5 text-xs font-semibold uppercase tracking-widest transition-custom whitespace-nowrap shadow-sm">
+            Contacto
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Contact Form Section -->
+  <section id="contacto" class="relative py-24 sm:py-36 px-4 bg-forest-dark">
+    <div class="max-w-4xl mx-auto relative z-10">
+      
+      <div class="text-center mb-16">
+        <span class="text-[10px] uppercase tracking-[0.25em] font-semibold text-forest-light mb-4 block">CONEXIÓN DIRECTA</span>
+        <h2 class="text-4xl sm:text-5xl font-light text-white mb-6">
+          Sé el primero en saber.
+        </h2>
+        <p class="text-slate-300 font-light max-w-lg mx-auto">
+          Déjanos tus datos para coordinar una reunión informativa personalizada y acceder a valores preferenciales de preventa.
+        </p>
+      </div>
+
+      <!-- Contact Bezel Enclosure -->
+      <div class="reveal-element double-bezel-outer">
+        <div class="double-bezel-inner p-8 sm:p-12">
+          
+          <form id="contact-form" class="space-y-6">
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div class="space-y-2">
+                <label for="name" class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Nombre Completo</label>
+                <input type="text" id="name" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-forest focus:ring-1 focus:ring-forest transition-colors duration-300">
+              </div>
+              <div class="space-y-2">
+                <label for="email" class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Correo Electrónico</label>
+                <input type="email" id="email" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-forest focus:ring-1 focus:ring-forest transition-colors duration-300">
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <label for="phone" class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Teléfono / WhatsApp</label>
+              <input type="tel" id="phone" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-forest focus:ring-1 focus:ring-forest transition-colors duration-300" placeholder="+56 9 ...">
+            </div>
+
+            <div class="space-y-2">
+              <label for="message" class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Mensaje (Opcional)</label>
+              <textarea id="message" rows="4" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-forest focus:ring-1 focus:ring-forest transition-colors duration-300" placeholder="Me interesa recibir información sobre condiciones comerciales..."></textarea>
+            </div>
+
+            <div class="pt-4">
+              <button type="submit" class="group w-full relative inline-flex items-center justify-center gap-4 bg-white hover:bg-neutral-100 text-slate-900 rounded-full py-4 text-xs font-semibold uppercase tracking-widest transition-custom active:scale-98 shadow-md">
+                <span>Enviar Solicitud</span>
+                <span class="w-6 h-6 rounded-full bg-black/5 flex items-center justify-center transition-custom group-hover:translate-x-1 group-hover:-translate-y-[1px] group-hover:scale-105">
+                  <i class="ph-light ph-paper-plane-right text-xs text-slate-900"></i>
+                </span>
+              </button>
+            </div>
+
+          </form>
+
+          <!-- Form Success Message -->
+          <div id="form-success" class="hidden flex-col items-center justify-center text-center py-12 space-y-4">
+            <div class="w-16 h-16 rounded-full border border-emerald-500/20 bg-emerald-950/40 flex items-center justify-center text-forest-light text-3xl">
+              <i class="ph-light ph-check-circle"></i>
+            </div>
+            <h3 class="text-2xl font-serif text-white">¡Solicitud Registrada!</h3>
+            <p class="text-slate-300 max-w-sm">
+              Hemos recibido tus datos con éxito. Redirigiendo a WhatsApp...
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-white/5 py-12 px-4 bg-black/80 backdrop-blur-sm">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+      <div>
+        <p class="text-xl font-serif text-white">PORTAL <span class="text-lake">LACUSTRE</span></p>
+        <p class="text-xs text-neutral-500 mt-2">© 2026 Portal Lacustre. Todos los derechos reservados.</p>
+      </div>
+      
+      <div class="flex items-center gap-6">
+        <a href="#inicio" class="text-[10px] uppercase tracking-wider text-neutral-400 hover:text-white transition-colors duration-300">Inicio</a>
+        <a href="#caracteristicas" class="text-[10px] uppercase tracking-wider text-neutral-400 hover:text-white transition-colors duration-300">Características</a>
+        <a href="#contacto" class="text-[10px] uppercase tracking-wider text-neutral-400 hover:text-white transition-colors duration-300">Contacto</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp Button -->
+  <a href="https://wa.me/56996433990" target="_blank" rel="noopener noreferrer" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-14 h-14 bg-[#25D366] hover:bg-[#20ba5a] text-white rounded-full shadow-[0_10px_30px_rgba(37,211,102,0.3)] hover:scale-110 active:scale-95 transition-custom" aria-label="WhatsApp">
+    <i class="ph-light ph-whatsapp-logo text-3xl"></i>
+  </a>
+
+  <!-- Custom JS Link -->
+  <script src="index.js"></script>
+</body>
+</html>
