@@ -1,0 +1,35 @@
+# ==========================================
+# Git Ignore - Portal Lacustre Production
+# ==========================================
+
+# Template Source & Documentation (Not needed in production)
+yorks/
+Documentation/
+
+# Sass & PHP Source Files (Compiled CSS is in assets/css/ and forms redirect directly to WhatsApp)
+assets/scss/
+assets/php/
+
+# Unused Root Boilerplate Files
+index.css
+index.js
+
+# OS-specific & System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+[Dd]esktop.ini
+
+# IDE & Editor Configs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*~
