@@ -1,20 +1,19 @@
 # ==========================================
-# Git Ignore - Portal Lacustre Production
+# Git Ignore - Proyecto Astra360
 # ==========================================
 
-# Template Source & Documentation (Not needed in production)
-yorks/
-Documentation/
+# ---- Workspace (archivos de trabajo, no van a producción) ----
+_workspace/
 
-# Sass & PHP Source Files (Compiled CSS is in assets/css/ and forms redirect directly to WhatsApp)
-assets/scss/
-assets/php/
+# ---- Node.js ----
+admin/backend/node_modules/
+admin/backend/.env
+.env
 
-# Unused Root Boilerplate Files
-index.css
-index.js
+# ---- Sass Source (compilado en site/assets/css/) ----
+site/assets/scss/
 
-# OS-specific & System Files
+# ---- OS-specific & System Files ----
 .DS_Store
 .DS_Store?
 ._*
@@ -24,7 +23,7 @@ ehthumbs.db
 Thumbs.db
 [Dd]esktop.ini
 
-# IDE & Editor Configs
+# ---- IDE & Editor Configs ----
 .vscode/
 .idea/
 *.suo

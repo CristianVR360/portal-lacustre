@@ -1,0 +1,13 @@
+{
+  "watch": [
+    "."
+  ],
+  "ignore": [
+    "../../masterplan/*",
+    "../../site/*",
+    "../../.git/*",
+    "*.xml",
+    "node_modules"
+  ],
+  "ext": "js,json"
+}

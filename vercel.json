@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "admin/backend/app.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "admin/backend/app.js"
+    },
+    {
+      "src": "/masterplan/pano.xml",
+      "dest": "admin/backend/app.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "admin/backend/app.js"
+    }
+  ]
+}
