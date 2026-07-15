@@ -14,6 +14,59 @@
   <link rel="stylesheet" href="assets/css/style.css" />
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <style>
+    /* Preloader Styles */
+    .page-preloader {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #0f172a;
+      z-index: 999999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    .page-preloader.fade-out {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .preloader-content {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+    .preloader-spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(161, 130, 74, 0.2);
+      border-top: 3px solid #a1824a;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    .preloader-logo-text {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 10px;
+    }
+    .preloader-subtitle {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12px;
+      color: #64748b;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
     /* Custom styles for Portal Lacustre */
     .fancybox__icon i[class^="ph-"], .fancybox__icon i[class*=" ph-"] {
       font-family: "Phosphor" !important;
@@ -389,6 +442,15 @@
 </head>
 
 <body>
+  <!-- Pantalla de Carga -->
+  <div id="page-preloader" class="page-preloader">
+    <div class="preloader-content">
+      <div class="preloader-spinner"></div>
+      <div class="preloader-logo-text">Portal Lacustre</div>
+      <div class="preloader-subtitle">Cargando experiencia...</div>
+    </div>
+  </div>
+
   <div class="wrapper">
     <!-- =========================
         Header
@@ -1435,6 +1497,26 @@
 
         renderPublicPriceList(filtered);
       });
+
+      // Ocultar preloader cuando carguen todos los elementos
+      $(window).on('load', function() {
+        const preloader = $('#page-preloader');
+        preloader.addClass('fade-out');
+        setTimeout(function() {
+          preloader.remove();
+        }, 500);
+      });
+
+      // Timeout de seguridad de 5 segundos para el preloader
+      setTimeout(function() {
+        const preloader = $('#page-preloader');
+        if (!preloader.hasClass('fade-out')) {
+          preloader.addClass('fade-out');
+          setTimeout(function() {
+            preloader.remove();
+          }, 500);
+        }
+      }, 5000);
     });
   </script>
 
