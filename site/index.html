@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>Portal Lacustre | Proyecto Habitacional Exclusivo en Villarrica</title>
   <meta name="description" content="El mejor proyecto habitacional de la zona lacustre. Parcelas de 5.000 m² con urbanización subterránea, fibra óptica y acceso controlado en Villarrica, Chile.">
-  <link href="assets/images/favicon/favicon.png" rel="icon">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230f172a'/%3E%3Cpath d='M32 12L12 50h40L32 12z' fill='%23a1824a'/%3E%3Cpath d='M32 12L25 26h14L32 12z' fill='%23ffffff' opacity='0.9'/%3E%3C/svg%3E">
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700%7cSource+Sans+Pro:300,300i,400,400i,600,600i,700">
   <link rel="stylesheet" href="assets/css/libraries.css" />
@@ -534,7 +534,7 @@
                   <img src="assets/logo/p2-Principal-blanco.png" alt="Portal Lacustre Logo" class="hero-logo">
                   <span class="slide__subtitle">A SOLO 5 MINUTOS DE VILLARRICA</span>
                   <h2 class="slide__title" style="font-size: 56px; line-height: 1.2; margin-bottom: 25px;">EN LAS PUERTAS DE LA ZONA LACUSTRE</h2>
-                  <p class="slide__desc color-white">Ubicación privilegiada en la ruta Freire - Villarrica que te conecta rápidamente con colegios, clínicas, comercio y la majestuosidad natural del sur.</p>
+                  <p class="slide__desc color-white">Ubicación privilegiada en la ruta Villarrica - Freire que te conecta rápidamente con colegios, clínicas, comercio y la majestuosidad natural del sur.</p>
                   <a href="#caracteristicas" class="btn btn__rounded btn__white">Ver más</a>
                 </div>
               </div>
@@ -582,8 +582,8 @@
                 <i class="ph-light ph-drop"></i>
               </div>
               <div class="fancybox__content">
-                <h4 class="fancybox__title">Factibilidad de agua</h4>
-                <p class="fancybox__desc">Red interna de agua de alto estándar soterrada, garantizando un suministro continuo sin alterar el ecosistema local.</p>
+                <h4 class="fancybox__title">Agua Instalada</h4>
+                <p class="fancybox__desc">Red interna de agua potable de alto estándar completamente instalada y operativa a pie de cada parcela.</p>
               </div>
             </div>
           </div>
@@ -595,7 +595,7 @@
               </div>
               <div class="fancybox__content">
                 <h4 class="fancybox__title">A 5 min de Villarrica</h4>
-                <p class="fancybox__desc">Ubicación privilegiada en la ruta Freire - Villarrica que te permite estar a minutos de colegios, clínicas, supermercados y gastronomía.</p>
+                <p class="fancybox__desc">Ubicación privilegiada en la ruta Villarrica - Freire que te permite estar a minutos de colegios, clínicas, supermercados y gastronomía.</p>
               </div>
             </div>
           </div>
@@ -638,7 +638,7 @@
                     </div>
                     <div class="fancybox__content">
                       <h4 class="fancybox__title">Urbanización Soterrada</h4>
-                      <p class="fancybox__desc">Redes de electricidad y agua completamente subterráneas para proteger la visual limpia de los volcanes.</p>
+                      <p class="fancybox__desc">Red de agua instalada y factibilidad de luz y fibra óptica soterradas, resguardando la belleza natural del paisaje.</p>
                     </div>
                   </div>
                 </div>
@@ -898,7 +898,7 @@
                 <div class="hover__content">
                   <div class="hover__content-inner">
                     <h4 class="project__title">Canalización Subterránea</h4>
-                    <p class="project__desc">Cada parcela cuenta con cámaras con conectividad de agua, luz y fibra óptica de primer nivel</p>
+                    <p class="project__desc">Cada parcela cuenta con agua instalada y factibilidad de luz y fibra óptica a través de canalización soterrada.</p>
                     <a href="javascript:void(0)" class="project__link open-lightbox">Ver en pantalla completa</a>
                   </div>
                 </div>
@@ -1414,7 +1414,8 @@
               badgeHtml = '<span style="padding:4px 8px; border-radius:12px; font-size:11px; font-weight:600; background:#f1f5f9; color:#475569; border:1px solid #e2e8f0;">Desconocido</span>';
           }
 
-          const priceFormatted = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(parseFloat(lot.url) || 0);
+          const isSold = lot.skinid === 'ht_noDisponible';
+          const priceFormatted = isSold ? '-' : new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(parseFloat(lot.url) || 0);
 
           // Extraer nomenclatura real del lote
           let realNomenclature = lot.id;

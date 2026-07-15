@@ -211,11 +211,25 @@
       if (tableBody) {
         tableBody.innerHTML = '';
         hotspots.forEach((hotspot) => {
+          // Extraer nomenclatura real del lote
+          let realNomenclature = hotspot.id;
+          let cleanDescription = hotspot.description || 'Sin descripción';
+          if (hotspot.description) {
+            const lines = hotspot.description.split('\n').map(l => l.trim()).filter(Boolean);
+            if (lines.length > 0) {
+              const firstLine = lines[0];
+              if (firstLine.length < 20 && !firstLine.toLowerCase().includes('superficie')) {
+                realNomenclature = firstLine;
+                cleanDescription = lines.slice(1).join(', ') || 'Sin descripción';
+              }
+            }
+          }
+
           const row = document.createElement('tr');
           row.className = 'hover:bg-slate-900/30 transition-colors';
           row.innerHTML = `
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-white">${hotspot.id}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">${hotspot.description || 'Sin descripción'}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-white">${realNomenclature} <span class="text-xs text-slate-500 font-normal">(${hotspot.id})</span></td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">${cleanDescription}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-amber-500">${formatCurrencyCLP(hotspot.url)}</td>
             <td class="px-6 py-4 whitespace-nowrap">
               ${getStatusBadge(hotspot.skinid)}
@@ -248,6 +262,20 @@
       }
 
       hotspots.forEach(hotspot => {
+        // Extraer nomenclatura real del lote
+        let realNomenclature = hotspot.id;
+        let cleanDescription = hotspot.description || 'Sin descripción';
+        if (hotspot.description) {
+          const lines = hotspot.description.split('\n').map(l => l.trim()).filter(Boolean);
+          if (lines.length > 0) {
+            const firstLine = lines[0];
+            if (firstLine.length < 20 && !firstLine.toLowerCase().includes('superficie')) {
+              realNomenclature = firstLine;
+              cleanDescription = lines.slice(1).join(', ') || 'Sin descripción';
+            }
+          }
+        }
+
         const card = document.createElement('div');
         
         let bgClass = '';
@@ -296,11 +324,11 @@
         card.className = `glass-panel ${bgClass} ${borderClass} rounded-2xl p-4 flex flex-col justify-between h-40 border transition-all duration-300 hover:scale-[1.02] cursor-pointer group`;
         card.innerHTML = `
           <div class="flex justify-between items-start">
-            <span class="text-lg font-bold text-white group-hover:text-amber-500 transition-colors">${hotspot.id}</span>
+            <span class="text-lg font-bold text-white group-hover:text-amber-500 transition-colors">${realNomenclature} <span class="text-xs text-slate-500 font-normal">(${hotspot.id})</span></span>
             <span class="text-[10px] px-2 py-0.5 rounded-full font-semibold ${textClass} border ${borderClass} uppercase tracking-wider">${statusLabel}</span>
           </div>
           <div class="space-y-1">
-            <p class="text-xs text-slate-400 truncate" title="${hotspot.description || 'Sin descripción'}">${hotspot.description || 'Sin descripción'}</p>
+            <p class="text-xs text-slate-400 truncate" title="${cleanDescription}">${cleanDescription}</p>
             <p class="text-sm font-bold text-slate-100">${formatCurrencyCLP(hotspot.url)}</p>
           </div>
           <div class="pt-2 border-t border-slate-800/50 flex justify-end">
@@ -324,15 +352,22 @@
         button.addEventListener('click', function(e) {
           e.stopPropagation(); // Avoid triggering any container clicks
           currentLoteId = this.getAttribute('data-lote-id');
-          modalLoteIdSpan.textContent = currentLoteId;
   
           // Find lot info directly from our memory array
           const lot = hotspotsXML.find(h => h.id === currentLoteId);
+          let realNomenclature = currentLoteId;
           if (lot) {
+            if (lot.description) {
+              const lines = lot.description.split('\n').map(l => l.trim()).filter(Boolean);
+              if (lines.length > 0 && lines[0].length < 20 && !lines[0].toLowerCase().includes('superficie')) {
+                realNomenclature = `${lines[0]} (${currentLoteId})`;
+              }
+            }
             titleInput.value = formatCurrencyCLP(lot.url.replace(/\D/g, ''));
             descriptionInput.value = lot.description || '';
             skinIDSelect.value = lot.skinid || '';
           }
+          modalLoteIdSpan.textContent = realNomenclature;
         });
       });
   
