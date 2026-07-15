@@ -86,6 +86,12 @@
       border-radius: 8px;
       box-shadow: 0 15px 35px rgba(0,0,0,0.15);
     }
+    @media (max-width: 767px) {
+      .iframe-container {
+        padding-top: 0 !important;
+        height: 70vh !important;
+      }
+    }
     .iframe-container iframe {
       position: absolute;
       top: 0;
@@ -93,6 +99,84 @@
       width: 100%;
       height: 100%;
       border: 0;
+    }
+
+    /* Hint overlay for streetview bubbles */
+    .streetview-hint-overlay {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(15, 23, 42, 0.9);
+      color: #ffffff;
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      pointer-events: none;
+      border: 1px solid rgba(161, 130, 74, 0.4);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+    @media (max-width: 767px) {
+      .streetview-hint-overlay {
+        font-size: 11px;
+        padding: 8px 16px;
+        width: 90%;
+        justify-content: center;
+      }
+    }
+
+    /* Fullscreen Map Modal */
+    .fullscreen-map-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background-color: #000000;
+      align-items: center;
+      justify-content: center;
+    }
+    .fullscreen-map-modal.active {
+      display: flex;
+    }
+    .fullscreen-map-content {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+    .fullscreen-map-content iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .fullscreen-map-close {
+      position: absolute;
+      top: 20px;
+      right: 25px;
+      color: #ffffff;
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 100000;
+      transition: 0.3s;
+      background: rgba(15, 23, 42, 0.6);
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .fullscreen-map-close:hover {
+      color: #a1824a;
+      background: rgba(15, 23, 42, 0.9);
+      border-color: #a1824a;
     }
 
     /* Botón personalizado de lista de precios */
@@ -122,6 +206,17 @@
       color: #a1824a !important;
       box-shadow: 0 10px 25px rgba(15, 23, 42, 0.35);
       transform: translateY(-2px);
+    }
+    .custom-price-btn.btn-fullscreen {
+      background-color: #0f172a !important;
+      border: 2px solid #a1824a !important;
+      color: #a1824a !important;
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.15) !important;
+    }
+    .custom-price-btn.btn-fullscreen:hover {
+      background-color: #a1824a !important;
+      color: #ffffff !important;
+      box-shadow: 0 10px 25px rgba(161, 130, 74, 0.35) !important;
     }
     .custom-price-btn i {
       font-size: 16px;
@@ -534,12 +629,18 @@
         <div class="row">
           <div class="col-sm-12">
             <div class="iframe-container">
+              <div id="streetview-hint" class="streetview-hint-overlay">
+                <i class="fa fa-info-circle"></i> Haz clic en las "burbujas" para ver el Street View 360°
+              </div>
               <iframe src="/masterplan/" allowfullscreen loading="lazy"></iframe>
             </div>
           </div>
         </div>
         <div class="row mt-40 text-center">
-          <div class="col-sm-12">
+          <div class="col-sm-12" style="display: flex; gap: 15px; justify-content: center; align-items: center; flex-wrap: wrap;">
+            <button id="openFullscreenBtn" class="custom-price-btn btn-fullscreen">
+              <i class="fa fa-arrows-alt"></i> Ver en pantalla completa
+            </button>
             <button id="openPriceListBtn" class="custom-price-btn">
               <i class="fa fa-list-ol"></i> Ver precios y disponibilidad
             </button>
@@ -846,7 +947,7 @@
             </div>
             <div class="about__text">
               <p class="mb-20" style="font-size: 16px; line-height: 1.8; color: #475569;">
-                Portal Lacustre nace de la visión de un padre y sus dos hijas. Como familia Cortés, dedicamos años de esfuerzo para hacer realidad este gran sueño: crear un espacio donde sea posible conectar con la naturaleza, disfrutar de la tranquilidad y construir nuevos recuerdos a solo minutos de Villarrica.
+                Portal Lacustre nace del sueño de la familia Cortés, una familia con profundas raíces en la zona. Durante años fuimos imaginando un lugar donde la tranquilidad del campo y la cercanía a la ciudad pudieran convivir en armonía. Hoy, esa visión se transforma en un proyecto pensado para quienes buscan conectar con la naturaleza y disfrutar de una vida más plena, a solo minutos de Villarrica.
               </p>
               <p class="mb-30" style="font-size: 16px; line-height: 1.8; color: #475569;">
                 Cada parcela ha sido diseñada con un profundo respeto por el entorno, pensando especialmente en quienes buscan consolidar un proyecto de vida familiar.
@@ -1253,9 +1354,23 @@
 
           const priceFormatted = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(parseFloat(lot.url) || 0);
 
+          // Extraer nomenclatura real del lote
+          let realNomenclature = lot.id;
+          let cleanDescription = lot.description || 'Sin descripción';
+          if (lot.description) {
+            const lines = lot.description.split('\n').map(l => l.trim()).filter(Boolean);
+            if (lines.length > 0) {
+              const firstLine = lines[0];
+              if (firstLine.length < 20 && !firstLine.toLowerCase().includes('superficie')) {
+                realNomenclature = firstLine;
+                cleanDescription = lines.slice(1).join(', ') || 'Sin descripción';
+              }
+            }
+          }
+
           row.html(`
-            <td style="padding:14px 16px; font-weight:700; color:#0f172a;">${lot.id}</td>
-            <td style="padding:14px 16px; color:#475569;">${lot.description || 'Sin descripción'}</td>
+            <td style="padding:14px 16px; font-weight:700; color:#0f172a;">${realNomenclature}</td>
+            <td style="padding:14px 16px; color:#475569;">${cleanDescription}</td>
             <td style="padding:14px 16px; font-weight:600; color:#a1824a;">${priceFormatted}</td>
             <td style="padding:14px 16px;">${badgeHtml}</td>
           `);
@@ -1274,13 +1389,46 @@
         $('#formSuccessModal').hide();
       });
 
+      // Lógica de Mapa Fullscreen
+      $('#openFullscreenBtn').on('click', function() {
+        $('#fullscreenMapModal iframe').attr('src', '/masterplan/');
+        $('#fullscreenMapModal').addClass('active');
+        $('body').css('overflow', 'hidden'); // Evita scroll de fondo
+      });
+
+      $('.fullscreen-map-close').on('click', function() {
+        $('#fullscreenMapModal').removeClass('active');
+        $('#fullscreenMapModal iframe').attr('src', '');
+        $('body').css('overflow', '');
+      });
+
+      // Ocultar hints de streetview después de 6 segundos
+      setTimeout(function() {
+        $('#streetview-hint, #streetview-hint-fullscreen').css({
+          'opacity': '0',
+          'transform': 'translate(-50%, -10px)'
+        });
+        setTimeout(function() {
+          $('#streetview-hint, #streetview-hint-fullscreen').hide();
+        }, 1000);
+      }, 6000);
+
       // Filtros de tabla de precios
       $('#modalSearchLot, #modalFilterStatus').on('input change', function() {
         const query = $('#modalSearchLot').val().toLowerCase().trim();
         const status = $('#modalFilterStatus').val();
 
         const filtered = publicLots.filter(lot => {
-          const matchesQuery = lot.id.toLowerCase().includes(query) || (lot.description && lot.description.toLowerCase().includes(query));
+          let realNomenclature = lot.id;
+          if (lot.description) {
+            const lines = lot.description.split('\n').map(l => l.trim()).filter(Boolean);
+            if (lines.length > 0 && lines[0].length < 20 && !lines[0].toLowerCase().includes('superficie')) {
+              realNomenclature = lines[0];
+            }
+          }
+          const matchesQuery = lot.id.toLowerCase().includes(query) || 
+                               realNomenclature.toLowerCase().includes(query) || 
+                               (lot.description && lot.description.toLowerCase().includes(query));
           const matchesStatus = status === 'all' || lot.skinid === status;
           return matchesQuery && matchesStatus;
         });
@@ -1384,6 +1532,17 @@
           Cerrar
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Modal Mapa Pantalla Completa -->
+  <div id="fullscreenMapModal" class="fullscreen-map-modal">
+    <span class="fullscreen-map-close"><i class="fa fa-times"></i></span>
+    <div class="fullscreen-map-content">
+      <div id="streetview-hint-fullscreen" class="streetview-hint-overlay">
+        <i class="fa fa-info-circle"></i> Haz clic en las "burbujas" para ver el Street View 360°
+      </div>
+      <iframe src="" allowfullscreen></iframe>
     </div>
   </div>
 </body>
