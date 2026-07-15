@@ -100,11 +100,22 @@
       max-height: 48px;
       width: auto;
     }
-    .navbar.is-sticky .navbar-brand .logo-light {
-      display: none;
+    .navbar.fixed-navbar .logo-light {
+      display: none !important;
     }
-    .navbar.is-sticky .navbar-brand .logo-dark {
-      display: inline-block;
+    .navbar.fixed-navbar .logo-dark {
+      display: inline-block !important;
+    }
+    .header-transparent .navbar.fixed-navbar .navbar-nav .nav__item-link {
+      color: #0f172a !important;
+    }
+    .header-transparent .navbar.fixed-navbar .navbar-nav .nav__item-link:hover {
+      color: #a1824a !important;
+    }
+    .navbar.fixed-navbar .navbar-toggler .menu-lines span,
+    .navbar.fixed-navbar .navbar-toggler .menu-lines span:before,
+    .navbar.fixed-navbar .navbar-toggler .menu-lines span:after {
+      background-color: #0f172a !important;
     }
     .hero-logo {
       max-height: 150px !important;
