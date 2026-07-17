@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { updateLot, getLots } = require('../controllers/admin.controller');
+const { updateLot, getLots, getCurrency, updateCurrency } = require('../controllers/admin.controller');
 const {
   authenticateJWT,
   authorizeAdmin,
@@ -12,5 +12,11 @@ router.get('/', getLots);
 
 // Private: Update lot details (Admin only)
 router.put('/', [authenticateJWT, authorizeAdmin], updateLot);
+
+// Public: Get project currency and conversion rate
+router.get('/currency', getCurrency);
+
+// Private: Update project currency settings
+router.put('/currency', [authenticateJWT, authorizeAdmin], updateCurrency);
 
 module.exports = router;

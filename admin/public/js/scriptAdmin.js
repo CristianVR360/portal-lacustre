@@ -47,6 +47,34 @@
     if (searchLotInput) searchLotInput.addEventListener('input', applyLotFilters);
     if (statusLotFilter) statusLotFilter.addEventListener('change', applyLotFilters);
 
+    // Selector de Moneda
+    const currencySelector = document.getElementById('currencySelector');
+    if (currencySelector) {
+      currencySelector.addEventListener('change', function(e) {
+        const newCurrency = e.target.value;
+        fetch(`${window.location.origin}/api/admin/currency`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ currency: newCurrency })
+        })
+        .then(res => {
+          if (res.ok) {
+            alert('Moneda del proyecto actualizada con éxito');
+            location.reload();
+          } else {
+            alert('Error al actualizar la moneda');
+          }
+        })
+        .catch(err => {
+          console.error('Error:', err);
+          alert('Error al conectar con el servidor');
+        });
+      });
+    }
+
     function applyLotFilters() {
       const query = searchLotInput ? searchLotInput.value.toLowerCase().trim() : '';
       const status = statusLotFilter ? statusLotFilter.value : 'all';
@@ -152,9 +180,85 @@
               </span>`;
     }
   
-    // Función para formatear los precios en formato CLP
-    function formatCurrencyCLP(value) {
-      return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(value);
+    // Formatear precios desde la base de datos (valores UF) para mostrar en la UI
+    function formatPriceFromDB(value) {
+      const numericValue = parseFloat(value) || 0;
+      const activeCurrency = window.activeCurrency || 'UF';
+      const conversionRate = window.conversionRate || 38000;
+      if (activeCurrency === 'UF') {
+        return new Intl.NumberFormat('es-CL', { maximumFractionDigits: 0 }).format(numericValue) + ' UF';
+      } else {
+        const clpValue = Math.round(numericValue * conversionRate);
+        return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(clpValue);
+      }
+    }
+
+    // Formatear la entrada de texto en el modal a medida que el usuario escribe
+    function formatPriceInput(value) {
+      const numericValue = parseFloat(String(value).replace(/\D/g, '')) || 0;
+      const activeCurrency = window.activeCurrency || 'UF';
+      if (activeCurrency === 'UF') {
+        return new Intl.NumberFormat('es-CL', { maximumFractionDigits: 0 }).format(numericValue) + ' UF';
+      } else {
+        return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(numericValue);
+      }
+    }
+
+    // Convertir el texto formateado de la UI al valor numérico canónico de la base de datos (UF)
+    function parsePriceToDB(valueStr) {
+      const numericValue = parseFloat(String(valueStr).replace(/\D/g, '')) || 0;
+      const activeCurrency = window.activeCurrency || 'UF';
+      const conversionRate = window.conversionRate || 38000;
+      if (activeCurrency === 'UF') {
+        return numericValue;
+      } else {
+        return Math.round(numericValue / conversionRate);
+      }
+    }
+
+    function parseDescription(desc, id) {
+      try {
+        if (desc && desc.trim().startsWith('{') && desc.trim().endsWith('}')) {
+          const data = JSON.parse(desc);
+          return {
+            comment: data.comment || '',
+            owner: data.owner || '',
+            saleDate: data.saleDate || '',
+            area: data.area || '5000',
+          };
+        }
+      } catch (e) {}
+      
+      const lines = desc ? desc.split('\n').map(l => l.trim()).filter(Boolean) : [];
+      let comment = '';
+      let area = '5000';
+      let owner = '';
+      let saleDate = '';
+
+      if (lines.length > 0) {
+        const lastLine = lines[lines.length - 1].toLowerCase();
+        if (lastLine.includes('superficie') || lastLine.includes('mts') || lastLine.includes('m²')) {
+          area = lastLine.replace(/[^\d]/g, '');
+          if (lines.length > 2) {
+            comment = lines.slice(1, lines.length - 1).join('\n');
+          } else if (lines.length === 2) {
+            comment = '';
+          }
+        } else {
+          comment = lines.slice(1).join('\n') || lines[0] || '';
+        }
+      }
+
+      if (comment.toLowerCase().startsWith('vendida') || comment.toLowerCase().startsWith('vendido')) {
+        owner = comment.replace(/vendid[ao]\s+/i, '').trim();
+      }
+
+      return {
+        comment,
+        owner,
+        saleDate,
+        area
+      };
     }
   
     const replacePage = () => {
@@ -187,9 +291,17 @@
     if (token !== 'logout' && isJWTToken) {
       fetch(url, optionsGET)
         .then((response) => response.json())
-        .then(({ hotspots }) => {
-          hotspots = hotspots.filter(hotspot => !['Point01', 'Point02', 'Point03'].includes(hotspot.id));
+        .then((data) => {
+          let hotspots = data.hotspots.filter(hotspot => !['Point01', 'Point02', 'Point03'].includes(hotspot.id));
           hotspotsXML = hotspots;
+  
+          window.activeCurrency = data.currency || 'UF';
+          window.conversionRate = data.conversionRate || 38000;
+  
+          const currencySelector = document.getElementById('currencySelector');
+          if (currencySelector) {
+            currencySelector.value = window.activeCurrency;
+          }
   
           // Actualizar estadísticas
           updateStatistics(hotspots);
@@ -211,26 +323,22 @@
       if (tableBody) {
         tableBody.innerHTML = '';
         hotspots.forEach((hotspot) => {
-          // Extraer nomenclatura real del lote
+          const info = parseDescription(hotspot.description, hotspot.id);
+          
           let realNomenclature = hotspot.id;
-          let cleanDescription = hotspot.description || 'Sin descripción';
-          if (hotspot.description) {
-            const lines = hotspot.description.split('\n').map(l => l.trim()).filter(Boolean);
-            if (lines.length > 0) {
-              const firstLine = lines[0];
-              if (firstLine.length < 20 && !firstLine.toLowerCase().includes('superficie')) {
-                realNomenclature = firstLine;
-                cleanDescription = lines.slice(1).join(', ') || 'Sin descripción';
-              }
-            }
-          }
+          const prefix = hotspot.id.startsWith('B') ? 'A24-' : 'A25-';
+          const num = hotspot.id.replace(/\D/g, '');
+          realNomenclature = `${prefix}${num}`;
 
           const row = document.createElement('tr');
           row.className = 'hover:bg-slate-900/30 transition-colors';
           row.innerHTML = `
             <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-white">${realNomenclature} <span class="text-xs text-slate-500 font-normal">(${hotspot.id})</span></td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">${cleanDescription}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-amber-500">${formatCurrencyCLP(hotspot.url)}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300 max-w-xs truncate" title="${info.comment || 'Sin comentarios'}">${info.comment || 'Sin comentarios'}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">${info.area || '5000'} m²</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">${info.owner || '-'}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400">${info.saleDate || '-'}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-amber-500">${formatPriceFromDB(hotspot.url)}</td>
             <td class="px-6 py-4 whitespace-nowrap">
               ${getStatusBadge(hotspot.skinid)}
             </td>
@@ -262,19 +370,12 @@
       }
 
       hotspots.forEach(hotspot => {
-        // Extraer nomenclatura real del lote
+        const info = parseDescription(hotspot.description, hotspot.id);
+        
         let realNomenclature = hotspot.id;
-        let cleanDescription = hotspot.description || 'Sin descripción';
-        if (hotspot.description) {
-          const lines = hotspot.description.split('\n').map(l => l.trim()).filter(Boolean);
-          if (lines.length > 0) {
-            const firstLine = lines[0];
-            if (firstLine.length < 20 && !firstLine.toLowerCase().includes('superficie')) {
-              realNomenclature = firstLine;
-              cleanDescription = lines.slice(1).join(', ') || 'Sin descripción';
-            }
-          }
-        }
+        const prefix = hotspot.id.startsWith('B') ? 'A24-' : 'A25-';
+        const num = hotspot.id.replace(/\D/g, '');
+        realNomenclature = `${prefix}${num}`;
 
         const card = document.createElement('div');
         
@@ -321,15 +422,24 @@
             statusLabel = 'Desconocido';
         }
 
-        card.className = `glass-panel ${bgClass} ${borderClass} rounded-2xl p-4 flex flex-col justify-between h-40 border transition-all duration-300 hover:scale-[1.02] cursor-pointer group`;
+        let ownerHtml = '';
+        if (hotspot.skinid === 'ht_noDisponible' && info.owner) {
+          ownerHtml = `<p class="text-[10px] text-red-400 font-semibold truncate" title="Propietario: ${info.owner}">Prop: ${info.owner}</p>`;
+        } else if (hotspot.skinid === 'ht_reservado' && info.owner) {
+          ownerHtml = `<p class="text-[10px] text-amber-400 font-semibold truncate" title="Reserva: ${info.owner}">Res: ${info.owner}</p>`;
+        }
+
+        card.className = `glass-panel ${bgClass} ${borderClass} rounded-2xl p-4 flex flex-col justify-between h-44 border transition-all duration-300 hover:scale-[1.02] cursor-pointer group`;
         card.innerHTML = `
           <div class="flex justify-between items-start">
-            <span class="text-lg font-bold text-white group-hover:text-amber-500 transition-colors">${realNomenclature} <span class="text-xs text-slate-500 font-normal">(${hotspot.id})</span></span>
+            <span class="text-lg font-bold text-white group-hover:text-amber-500 transition-colors">${realNomenclature}</span>
             <span class="text-[10px] px-2 py-0.5 rounded-full font-semibold ${textClass} border ${borderClass} uppercase tracking-wider">${statusLabel}</span>
           </div>
-          <div class="space-y-1">
-            <p class="text-xs text-slate-400 truncate" title="${cleanDescription}">${cleanDescription}</p>
-            <p class="text-sm font-bold text-slate-100">${formatCurrencyCLP(hotspot.url)}</p>
+          <div class="space-y-0.5">
+            <p class="text-xs text-slate-400 truncate" title="${info.comment || 'Sin comentarios'}">${info.comment || 'Sin comentarios'}</p>
+            <p class="text-xs text-slate-500">Superficie: ${info.area || '5000'} m²</p>
+            ${ownerHtml}
+            <p class="text-sm font-bold text-slate-100">${formatPriceFromDB(hotspot.url)}</p>
           </div>
           <div class="pt-2 border-t border-slate-800/50 flex justify-end">
             <button class="text-xs font-semibold text-amber-500 hover:text-amber-400 modify-btn" data-bs-toggle="modal" data-bs-target="#editModal" data-lote-id="${hotspot.id}">
@@ -344,7 +454,6 @@
     function setupModifyButtons() {
       const modifyButtons = document.querySelectorAll('.modify-btn');
       const titleInput = document.getElementById('titleInput');
-      const descriptionInput = document.getElementById('descriptionInput');
       const skinIDSelect = document.getElementById('skinIDSelect');
       const modalLoteIdSpan = document.getElementById('modalLoteId');
   
@@ -356,15 +465,23 @@
           // Find lot info directly from our memory array
           const lot = hotspotsXML.find(h => h.id === currentLoteId);
           let realNomenclature = currentLoteId;
+          const prefix = currentLoteId.startsWith('B') ? 'A24-' : 'A25-';
+          const num = currentLoteId.replace(/\D/g, '');
+          realNomenclature = `${prefix}${num} (${currentLoteId})`;
+
           if (lot) {
-            if (lot.description) {
-              const lines = lot.description.split('\n').map(l => l.trim()).filter(Boolean);
-              if (lines.length > 0 && lines[0].length < 20 && !lines[0].toLowerCase().includes('superficie')) {
-                realNomenclature = `${lines[0]} (${currentLoteId})`;
-              }
+            const info = parseDescription(lot.description, lot.id);
+
+            const priceLabel = document.getElementById('priceLabel');
+            if (priceLabel) {
+              priceLabel.textContent = `Precio comercial (${window.activeCurrency || 'UF'})`;
             }
-            titleInput.value = formatCurrencyCLP(lot.url.replace(/\D/g, ''));
-            descriptionInput.value = lot.description || '';
+
+            titleInput.value = formatPriceFromDB(lot.url);
+            document.getElementById('comentarioInput').value = info.comment || '';
+            document.getElementById('superficieInput').value = info.area || '5000';
+            document.getElementById('propietarioInput').value = info.owner || '';
+            document.getElementById('fechaVentaInput').value = info.saleDate || '';
             skinIDSelect.value = lot.skinid || '';
           }
           modalLoteIdSpan.textContent = realNomenclature;
@@ -375,7 +492,7 @@
       if (titleInput) {
         titleInput.addEventListener('input', function(e) {
           const value = e.target.value.replace(/\D/g, ''); // Eliminar cualquier carácter no numérico
-          e.target.value = formatCurrencyCLP(value); // Formatear el valor como CLP
+          e.target.value = formatPriceInput(value); // Formatear el valor según la moneda
         });
       }
     }
@@ -385,15 +502,22 @@
   
     if (saveChangesBtn) {
       saveChangesBtn.addEventListener('click', function() {
-        const price = document.getElementById('titleInput').value.replace(/\D/g, ''); // Limpiar el valor
-        const description = document.getElementById('descriptionInput').value;
+        const priceInputStr = document.getElementById('titleInput').value;
+        const price = parsePriceToDB(priceInputStr);
+        
+        const comment = document.getElementById('comentarioInput').value;
+        const area = document.getElementById('superficieInput').value || '5000';
+        const owner = document.getElementById('propietarioInput').value;
+        const saleDate = document.getElementById('fechaVentaInput').value;
         const status = document.getElementById('skinIDSelect').value;
+        
+        const descriptionJSON = JSON.stringify({ comment, area, owner, saleDate });
     
         const data = {
           lotId: currentLoteId,
           status,
-          newInfo: price,
-          description
+          newInfo: String(price),
+          description: descriptionJSON
         };
     
         fetch(url, {

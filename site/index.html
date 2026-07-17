@@ -1375,6 +1375,8 @@
           .then(res => res.json())
           .then(data => {
             publicLots = data.hotspots.filter(h => !['Point01', 'Point02', 'Point03'].includes(h.id));
+            window.activeCurrency = data.currency || 'UF';
+            window.conversionRate = data.conversionRate || 38000;
             renderPublicPriceList(publicLots);
           })
           .catch(err => {
@@ -1426,7 +1428,18 @@
           }
 
           const isSold = lot.skinid === 'ht_noDisponible';
-          const priceFormatted = isSold ? '-' : new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(parseFloat(lot.url) || 0);
+          let priceFormatted = '-';
+          if (!isSold) {
+            const numericValue = parseFloat(lot.url) || 0;
+            const activeCurrency = window.activeCurrency || 'UF';
+            const conversionRate = window.conversionRate || 38000;
+            if (activeCurrency === 'UF') {
+              priceFormatted = new Intl.NumberFormat('es-CL', { maximumFractionDigits: 0 }).format(numericValue) + ' UF';
+            } else {
+              const clpValue = Math.round(numericValue * conversionRate);
+              priceFormatted = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(clpValue);
+            }
+          }
 
           // Extraer nomenclatura real del lote
           let realNomenclature = lot.id;

@@ -60,6 +60,48 @@ const getMainPanorama = (result) => {
   return bestPanorama;
 };
 
+let cachedUF = null;
+let lastFetch = 0;
+
+const fetchUFValue = async () => {
+  const now = Date.now();
+  if (cachedUF && (now - lastFetch < 3600000)) {
+    return cachedUF;
+  }
+  try {
+    const res = await fetch('https://mindicador.cl/api/uf');
+    const data = await res.json();
+    if (data && data.serie && data.serie[0] && data.serie[0].valor) {
+      cachedUF = data.serie[0].valor;
+      lastFetch = now;
+      console.log('Fetched UF rate in modifyXML:', cachedUF);
+      return cachedUF;
+    }
+  } catch (err) {
+    console.warn('Could not fetch UF rate in modifyXML, using fallback:', err.message);
+  }
+  return 38000;
+};
+
+const cleanDescriptionForXML = (desc, lotId) => {
+  if (!desc) return '';
+  try {
+    if (desc.trim().startsWith('{') && desc.trim().endsWith('}')) {
+      const data = JSON.parse(desc);
+      const prefix = lotId && lotId.startsWith('B') ? 'A24-' : 'A25-';
+      const num = lotId ? lotId.replace(/\D/g, '') : '';
+      const nomenclature = `${prefix}${num}`;
+      return `${nomenclature}\nSuperficie Total: ${data.area || '5000'}m²`;
+    }
+  } catch (e) {}
+  
+  const lines = desc.split('\n').map(l => l.trim()).filter(Boolean);
+  if (lines.length <= 1) {
+    return desc;
+  }
+  return `${lines[0]}\n${lines[lines.length - 1]}`;
+};
+
 // Sync database state into local pano.xml
 const syncDatabaseToXML = async (dbLots) => {
   try {
@@ -71,13 +113,34 @@ const syncDatabaseToXML = async (dbLots) => {
       if (panorama.hotspots && panorama.hotspots.length > 0) {
         const hotspots = panorama.hotspots[0].hotspot;
 
+        let currency = 'UF';
+        const configData = dbLots.find(l => l.id === 'CONFIG_CURRENCY');
+        if (configData) {
+          currency = configData.url || 'UF';
+        }
+        
+        const rate = await fetchUFValue();
+
         dbLots.forEach((dbLot) => {
+          if (dbLot.id && dbLot.id.toLowerCase() === 'config_currency') return;
           const hotspot = hotspots.find(h => h.$.id.toLowerCase() === dbLot.id.toLowerCase());
           if (hotspot) {
             // Update attributes from database record
-            hotspot.$.description = dbLot.description || '';
+            hotspot.$.description = cleanDescriptionForXML(dbLot.description, dbLot.id);
             hotspot.$.skinid = dbLot.skinid || '';
-            hotspot.$.url = dbLot.url || '';
+            
+            // Format price for hotspot XML
+            const numericValue = parseFloat(dbLot.url) || 0;
+            if (dbLot.skinid === 'ht_noDisponible' || numericValue === 0) {
+              hotspot.$.url = 'Vendido';
+            } else {
+              if (currency === 'UF') {
+                hotspot.$.url = new Intl.NumberFormat('es-CL', { maximumFractionDigits: 0 }).format(numericValue) + ' UF';
+              } else {
+                const clpValue = Math.round(numericValue * rate);
+                hotspot.$.url = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(clpValue);
+              }
+            }
           }
         });
 
@@ -153,7 +216,7 @@ const getAllHotspots = async () => {
     }
 
     // Map database structures back to match local frontend schema expectation
-    const excludedIds = ['point01', 'point02', 'point03', 'point04', 'point05', 'point25'];
+    const excludedIds = ['point01', 'point02', 'point03', 'point04', 'point05', 'point25', 'config_currency'];
     const formattedLots = (dbLots || [])
       .filter(lot => !excludedIds.includes(lot.id.toLowerCase()))
       .map(lot => ({
@@ -200,7 +263,7 @@ const getAllHotspotsFromXML = async () => {
     const panorama = getMainPanorama(result);
     
     if (panorama && panorama.hotspots && panorama.hotspots[0].hotspot) {
-      const excludedIds = ['point01', 'point02', 'point03', 'point04', 'point05', 'point25'];
+      const excludedIds = ['point01', 'point02', 'point03', 'point04', 'point05', 'point25', 'config_currency'];
       const uniqueLots = new Map();
 
       panorama.hotspots[0].hotspot.forEach(h => {
@@ -319,14 +382,35 @@ const generateDynamicXML = async () => {
         .select('*');
 
       if (!error && dbLots && dbLots.length > 0) {
+        let currency = 'UF';
+        const configData = dbLots.find(l => l.id === 'CONFIG_CURRENCY');
+        if (configData) {
+          currency = configData.url || 'UF';
+        }
+        
+        const rate = await fetchUFValue();
+
         // Map db values to template hotspots
         hotspots.forEach((hotspot) => {
           const id = hotspot.$.id || '';
-          const dbLot = dbLots.find(l => l.id === id);
+          if (id.toLowerCase() === 'config_currency') return;
+          const dbLot = dbLots.find(l => l.id.toLowerCase() === id.toLowerCase());
           if (dbLot) {
-            hotspot.$.description = dbLot.description || '';
+            hotspot.$.description = cleanDescriptionForXML(dbLot.description, dbLot.id);
             hotspot.$.skinid = dbLot.skinid || '';
-            hotspot.$.url = dbLot.url || '';
+            
+            // Format price for hotspot XML
+            const numericValue = parseFloat(dbLot.url) || 0;
+            if (dbLot.skinid === 'ht_noDisponible' || numericValue === 0) {
+              hotspot.$.url = 'Vendido';
+            } else {
+              if (currency === 'UF') {
+                hotspot.$.url = new Intl.NumberFormat('es-CL', { maximumFractionDigits: 0 }).format(numericValue) + ' UF';
+              } else {
+                const clpValue = Math.round(numericValue * rate);
+                hotspot.$.url = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(clpValue);
+              }
+            }
           }
         });
       }

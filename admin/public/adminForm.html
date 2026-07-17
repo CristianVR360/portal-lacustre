@@ -165,6 +165,15 @@
             
             <!-- Quick Global Controls / Info -->
             <div class="flex items-center gap-4">
+                <!-- Selector de Moneda -->
+                <div class="flex flex-col text-left">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Moneda</span>
+                    <select id="currencySelector" class="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none focus:border-amber-500 font-bold cursor-pointer">
+                        <option value="UF">UF</option>
+                        <option value="CLP">CLP</option>
+                    </select>
+                </div>
+                <div class="w-px h-8 bg-slate-800"></div>
                 <div class="hidden sm:flex flex-col text-right">
                     <span class="text-xs text-slate-400">Proyecto Activo</span>
                     <span class="text-sm font-semibold text-amber-500">Portal Lacustre</span>
@@ -293,7 +302,10 @@
                             <thead>
                                 <tr class="bg-slate-900/80 border-b border-slate-800">
                                     <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">ID Lote</th>
-                                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Descripción</th>
+                                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Comentario</th>
+                                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Superficie</th>
+                                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Propietario</th>
+                                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Fecha Venta</th>
                                     <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Precio</th>
                                     <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Disponibilidad</th>
                                     <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 text-right">Acción</th>
@@ -501,14 +513,30 @@
                 </div>
                 <div class="modal-body px-6 py-4 space-y-4">
                     <form id="editForm" class="space-y-4">
-                        <div class="form-group">
-                            <label for="titleInput" class="block text-sm font-semibold text-slate-300 mb-1">Precio comercial (CLP)</label>
-                            <input type="text" class="form-control rounded-xl" id="titleInput" placeholder="Ingrese el precio"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="descriptionInput" class="block text-sm font-semibold text-slate-300 mb-1">Descripción de Parcela</label>
-                            <textarea class="form-control rounded-xl" id="descriptionInput" rows="3" placeholder="Ingrese la descripción del lote"></textarea>
-                        </div>
+                         <div class="form-group">
+                             <label for="titleInput" class="block text-sm font-semibold text-slate-300 mb-1" id="priceLabel">Precio comercial</label>
+                             <input type="text" class="form-control rounded-xl" id="titleInput" placeholder="Ingrese el precio"/>
+                         </div>
+                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                             <div class="form-group">
+                                 <label for="comentarioInput" class="block text-sm font-semibold text-slate-300 mb-1">Comentarios / Notas</label>
+                                 <textarea class="form-control rounded-xl" id="comentarioInput" rows="5" placeholder="Ingrese notas o comentarios del lote"></textarea>
+                             </div>
+                             <div class="form-group space-y-3">
+                                 <div>
+                                     <label for="superficieInput" class="block text-sm font-semibold text-slate-300 mb-1">Superficie (m²)</label>
+                                     <input type="text" class="form-control rounded-xl" id="superficieInput" placeholder="5000"/>
+                                 </div>
+                                 <div>
+                                     <label for="propietarioInput" class="block text-sm font-semibold text-slate-300 mb-1">Propietario (si es vendido/reservado)</label>
+                                     <input type="text" class="form-control rounded-xl" id="propietarioInput" placeholder="Nombre de comprador"/>
+                                 </div>
+                                 <div>
+                                     <label for="fechaVentaInput" class="block text-sm font-semibold text-slate-300 mb-1">Fecha de venta</label>
+                                     <input type="date" class="form-control rounded-xl" id="fechaVentaInput"/>
+                                 </div>
+                             </div>
+                         </div>
                         <div class="form-group">
                             <label for="skinIDSelect" class="block text-sm font-semibold text-slate-300 mb-1">Estado de disponibilidad</label>
                             <select class="form-select rounded-xl" id="skinIDSelect">
@@ -838,17 +866,33 @@
             const totalVentas = dataToUse.totalVentas || 0;
             const promedioPrecios = dataToUse.promedioPrecios || 0;
 
-            document.getElementById('totalVentas').textContent = new Intl.NumberFormat('es-CL', { 
-                style: 'currency', 
-                currency: 'CLP',
-                maximumFractionDigits: 0
-            }).format(totalVentas);
-            
-            document.getElementById('promedioPrecios').textContent = new Intl.NumberFormat('es-CL', { 
-                style: 'currency', 
-                currency: 'CLP',
-                maximumFractionDigits: 0
-            }).format(promedioPrecios);
+            const activeCurrency = window.activeCurrency || 'UF';
+            const conversionRate = window.conversionRate || 38000;
+
+            if (activeCurrency === 'UF') {
+                document.getElementById('totalVentas').textContent = new Intl.NumberFormat('es-CL', { 
+                    maximumFractionDigits: 0
+                }).format(totalVentas) + ' UF';
+                
+                document.getElementById('promedioPrecios').textContent = new Intl.NumberFormat('es-CL', { 
+                    maximumFractionDigits: 0
+                }).format(promedioPrecios) + ' UF';
+            } else {
+                const totalVentasCLP = Math.round(totalVentas * conversionRate);
+                const promedioCLP = Math.round(promedioPrecios * conversionRate);
+                
+                document.getElementById('totalVentas').textContent = new Intl.NumberFormat('es-CL', { 
+                    style: 'currency', 
+                    currency: 'CLP',
+                    maximumFractionDigits: 0
+                }).format(totalVentasCLP);
+                
+                document.getElementById('promedioPrecios').textContent = new Intl.NumberFormat('es-CL', { 
+                    style: 'currency', 
+                    currency: 'CLP',
+                    maximumFractionDigits: 0
+                }).format(promedioCLP);
+            }
 
             if (pieChart) {
                 pieChart.data.datasets[0].data = [
@@ -997,12 +1041,23 @@
                 if (!currentProjectData) return 'Cargando datos del proyecto...';
                 const lowerQuestion = question.toLowerCase();
                 
+                const activeCurrency = window.activeCurrency || 'UF';
+                const conversionRate = window.conversionRate || 38000;
+                
+                const formatVal = (val) => {
+                    if (activeCurrency === 'UF') {
+                        return new Intl.NumberFormat('es-CL', { maximumFractionDigits: 0 }).format(val) + ' UF';
+                    } else {
+                        return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(val * conversionRate);
+                    }
+                };
+                
                 if (lowerQuestion.includes('vendido') || lowerQuestion.includes('venta')) {
-                    const totalVentas = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(currentProjectData.totalVentas || 0);
+                    const totalVentas = formatVal(currentProjectData.totalVentas || 0);
                     return `Actualmente hay ${currentProjectData.lotesVendidos || 0} lotes vendidos. El valor total de ventas es ${totalVentas}.`;
                 }
                 if (lowerQuestion.includes('precio') || lowerQuestion.includes('promedio')) {
-                    const promedio = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(currentProjectData.promedioPrecios || 0);
+                    const promedio = formatVal(currentProjectData.promedioPrecios || 0);
                     return `El precio promedio de los lotes es de ${promedio}.`;
                 }
                 if (lowerQuestion.includes('disponible')) {
