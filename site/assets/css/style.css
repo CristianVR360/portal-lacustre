@@ -737,7 +737,7 @@ h6 {
   font-weight: 700;
   margin-bottom: 23px;
   line-height: 1.1;
-  text-transform: capitalize;
+  text-transform: none;
 }
 
 p {
@@ -1732,7 +1732,7 @@ label.error {
 
 .navbar .dropdown-menu .nav__item .nav__item-link {
   color: #7f7f7f;
-  text-transform: capitalize;
+  text-transform: none;
   font-weight: 500;
   line-height: 40px;
   white-space: nowrap;

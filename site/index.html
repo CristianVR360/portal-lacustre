@@ -803,6 +803,10 @@
        Ubicación y Conectividad (Nueva Sección)
     ============================ -->
     <style>
+      h1, h2, h3, h4, h5, h6,
+      .heading__title, .slide__title, .feature__title, .fancybox__title, .project__title, .cta__title {
+        text-transform: none !important;
+      }
       .filter-btn {
         padding: 10px 22px;
         border-radius: 30px;
@@ -834,6 +838,14 @@
         max-width: 250px;
         min-width: 180px;
         transition: all 0.3s ease;
+      }
+      .feature-card-villarrica {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
+      .feature-card-villarrica:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 35px rgba(15, 23, 42, 0.1) !important;
+        border-color: rgba(161, 130, 74, 0.4) !important;
       }
     </style>
     <section id="conectividad-turismo" class="pt-100 pb-80" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; position: relative;">
@@ -874,7 +886,7 @@
             <div class="text-center p-4 rounded-2xl" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); transition: all 0.3s ease; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;" onmouseover="this.style.transform='translateY(-5px)'; this.style.borderColor='rgba(161, 130, 74, 0.4)'; this.style.background='rgba(255, 255, 255, 0.05)';" onmouseout="this.style.transform='none'; this.style.borderColor='rgba(255, 255, 255, 0.05)'; this.style.background='rgba(255, 255, 255, 0.03)';">
               <div style="font-size: 28px; color: #a1824a; margin-bottom: 10px;"><i class="ph ph-bank"></i></div>
               <div style="font-family: 'Montserrat', sans-serif; font-size: 22px; font-weight: 800; color: #ffffff; margin-bottom: 5px;">5 Min</div>
-              <div style="font-size: 13px; color: #ffffff; font-weight: 600; margin-bottom: 4px;">Villarrica Centro</div>
+              <div style="font-size: 13px; color: #ffffff; font-weight: 600; margin-bottom: 4px;">Villarrica centro</div>
               <div style="font-size: 11px; color: #94a3b8; line-height: 1.3; font-weight: 400; text-align: center;">Bancos, centros médicos, supermercados y servicios esenciales a mano.</div>
             </div>
           </div>
@@ -974,7 +986,7 @@
             <div class="text-center p-4 rounded-2xl" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); transition: all 0.3s ease; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;" onmouseover="this.style.transform='translateY(-5px)'; this.style.borderColor='rgba(161, 130, 74, 0.4)'; this.style.background='rgba(255, 255, 255, 0.05)';" onmouseout="this.style.transform='none'; this.style.borderColor='rgba(255, 255, 255, 0.05)'; this.style.background='rgba(255, 255, 255, 0.03)';">
               <div style="font-size: 28px; color: #a1824a; margin-bottom: 10px;"><i class="ph ph-snowflake"></i></div>
               <div style="font-family: 'Montserrat', sans-serif; font-size: 22px; font-weight: 800; color: #ffffff; margin-bottom: 5px;">45 Min</div>
-              <div style="font-size: 13px; color: #ffffff; font-weight: 600; margin-bottom: 4px;">Volcán (Centro Ski)</div>
+              <div style="font-size: 13px; color: #ffffff; font-weight: 600; margin-bottom: 4px;">Volcán (centro ski)</div>
               <div style="font-size: 11px; color: #94a3b8; line-height: 1.3; font-weight: 400; text-align: center;">Deportes de invierno y ascensiones guiadas al cráter del macizo.</div>
             </div>
           </div>
@@ -1105,7 +1117,7 @@
               </div>
               <h4 style="font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">Comercio y servicios urbanos</h4>
               <p style="font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 0;">
-                Disfruta de la conveniencia de una gran ciudad sin perder la esencia del sur: supermercados de grandes cadenas (Eltit, Jumbo, Lider), centros comerciales, bancos, farmacias y una variada y destacada gastronomía lacustre.
+                Disfruta de la conveniencia de una gran ciudad sin perder la esencia del sur: supermercados de grandes cadenas, centros comerciales, bancos, farmacias y una variada y destacada gastronomía lacustre.
               </p>
             </div>
           </div>
@@ -1131,7 +1143,7 @@
               </div>
               <h4 style="font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">Gran alternativa habitacional en Portal Lacustre</h4>
               <p style="font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 0;">
-                Portal Lacustre te brinda el equilibrio perfecto: parcelas de 5.000 m² planas y limpias, con urbanización soterrada de luz, agua conectada, fibra óptica y portón eléctrico. Todo el espacio y resguardo que tu familia merece, en una ubicación residencial privilegiada.
+                Portal Lacustre te brinda el equilibrio perfecto: parcelas de 5.000 m² planas, con agua conectada, urbanización soterrada de luz y fibra óptica, y portón eléctrico. Todo el espacio y resguardo que tu familia merece, en una ubicación residencial privilegiada.
               </p>
             </div>
           </div>
@@ -1146,11 +1158,11 @@
               <p style="color: #94a3b8; font-size: 15px; max-width: 700px; margin: 0 auto 25px; line-height: 1.6;">
                 Descubre cómo Portal Lacustre te conecta con la naturaleza y las comodidades del centro urbano en un proyecto diseñado para perdurar por generaciones.
               </p>
-              <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
-                <a href="https://wa.me/56996433990?text=Hola,%20me%20interesa%20conocer%20más%20sobre%20las%20parcelas%20y%20el%20estilo%20de%20vida%20en%20Portal%20Lacustre%20Villarrica." target="_blank" rel="noopener noreferrer" class="btn btn__rounded" style="background-color: #25d366; color: white; border: none; padding: 12px 28px; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
-                  <i class="fa fa-whatsapp" style="font-size: 18px;"></i> Contactar por WhatsApp
+              <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; align-items: center;">
+                <a href="https://wa.me/56996433990?text=Hola,%20me%20interesa%20conocer%20más%20sobre%20las%20parcelas%20y%20el%20estilo%20de%20vida%20en%20Portal%20Lacustre%20Villarrica." target="_blank" rel="noopener noreferrer" style="background-color: #25d366; color: #ffffff; border: 2px solid #25d366; padding: 12px 26px; font-size: 14px; font-weight: 600; font-family: 'Montserrat', sans-serif; border-radius: 50px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);" onmouseover="this.style.backgroundColor='#1eb854'; this.style.borderColor='#1eb854'; this.style.transform='translateY(-2px)';" onmouseout="this.style.backgroundColor='#25d366'; this.style.borderColor='#25d366'; this.style.transform='none';">
+                  <i class="fa fa-whatsapp" style="font-size: 20px;"></i> Contactar por WhatsApp
                 </a>
-                <a href="#contacto" class="btn btn__rounded btn__white btn__bordered" style="padding: 12px 28px; font-size: 14px; font-weight: 600;">
+                <a href="#contacto" style="background-color: transparent; color: #ffffff; border: 2px solid rgba(255, 255, 255, 0.8); padding: 12px 26px; font-size: 14px; font-weight: 600; font-family: 'Montserrat', sans-serif; border-radius: 50px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#ffffff'; this.style.color='#0f172a'; this.style.transform='translateY(-2px)';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#ffffff'; this.style.transform='none';">
                   Solicitar información
                 </a>
               </div>
