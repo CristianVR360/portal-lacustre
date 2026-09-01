@@ -24,17 +24,17 @@
       <hotspot skinid="ht_disponible" target="_blank" tilt="-56.67" description="A25-4&#xA;Superficie Total: 5000m²" url="2.000 UF" id="A4" pan="-173.08" title="A4"/>
       <hotspot skinid="ht_disponible" target="_blank" tilt="-60.35" description="A25-5&#xA;Superficie Total: 5000m²" url="2.000 UF" id="A5" pan="-163.61" title="A5"/>
       <hotspot skinid="ht_disponible" target="_blank" tilt="-63.79" description="A25-6&#xA;Superficie Total: 5000m²" url="1.850 UF" id="A6" pan="-153.78" title="A6"/>
-      <hotspot skinid="ht_disponible" target="_blank" tilt="-72.3" description="A25-7&#xA;Superficie Total: 5000m²" url="1.700 UF" id="A7" pan="-164.49" title="A7"/>
+      <hotspot skinid="ht_noDisponible" target="_blank" tilt="-72.3" description="A25-7&#xA;Superficie Total: 5000m²" url="Vendido" id="A7" pan="-164.49" title="A7"/>
       <hotspot skinid="ht_noDisponible" target="_blank" tilt="-73.16" description="A25-8&#xA;Superficie Total: 5000m²" url="Vendido" id="A8" pan="-133.09" title="A8"/>
       <hotspot skinid="ht_disponible" target="_blank" tilt="-82.93" description="A25-9&#xA;Superficie Total: 5000m²" url="2.000 UF" id="A9" pan="-139.93" title="A9"/>
-      <hotspot skinid="ht_disponible" target="_blank" tilt="-77.04" description="A25-10&#xA;Superficie Total: 5000m²" url="1.800 UF" id="A10" pan="-86.56" title="A10"/>
-      <hotspot skinid="ht_noDisponible" target="_blank" tilt="-81.33" description="A25-11&#xA;Superficie Total: 5000m²" url="Vendido" id="A11" pan="-38.03" title="A11"/>
-      <hotspot skinid="ht_noDisponible" target="_blank" tilt="-72.76" description="A25-12&#xA;Superficie Total: 5000m²" url="Vendido" id="A12" pan="-44.79" title="A12"/>
-      <hotspot skinid="ht_disponible" target="_blank" tilt="-70.63" description="A25-13&#xA;Superficie Total: 5000m²" url="1.800 UF" id="A13" pan="-16.24" title="A13"/>
-      <hotspot skinid="ht_disponible" target="_blank" tilt="-64.16" description="A25-14&#xA;Superficie Total: 5000m²" url="2.000 UF" id="A14" pan="-25.89" title="A14"/>
-      <hotspot skinid="ht_disponible" target="_blank" tilt="-60.14" description="A25-15&#xA;Superficie Total: 5000m²" url="1.700 UF" id="A15" pan="-10.23" title="A15"/>
-      <hotspot skinid="ht_disponible" target="_blank" tilt="-55.1" description="A25-16&#xA;Superficie Total: 5000m²" url="2.000 UF" id="A16" pan="-19.13" title="A16"/>
-      <hotspot skinid="ht_disponible" target="_blank" tilt="-51.81" description="A25-17&#xA;Superficie Total: 5000m²" url="1.600 UF" id="A17" pan="-6.68" title="A17"/>
+      <hotspot skinid="ht_disponible" target="_blank" tilt="-77.04" description="A25-10&#xA;Vista parcial al Volcán&#xA;Superficie Total: 5000m²" url="1.800 UF" id="A10" pan="-86.56" title="A10"/>
+      <hotspot skinid="ht_noDisponible" target="_blank" tilt="-81.33" description="A25-11&#xA;Vista parcial al Volcán&#xA;Superficie Total: 5000m²" url="Vendido" id="A11" pan="-38.03" title="A11"/>
+      <hotspot skinid="ht_noDisponible" target="_blank" tilt="-72.76" description="A25-12&#xA;Vista parcial al Volcán&#xA;Superficie Total: 5000m²" url="Vendido" id="A12" pan="-44.79" title="A12"/>
+      <hotspot skinid="ht_disponible" target="_blank" tilt="-70.63" description="A25-13&#xA;Con vista al Volcán&#xA;Superficie Total: 5000m²" url="1.800 UF" id="A13" pan="-16.24" title="A13"/>
+      <hotspot skinid="ht_disponible" target="_blank" tilt="-64.16" description="A25-14&#xA;Con vista al Volcán&#xA;Superficie Total: 5000m²" url="2.000 UF" id="A14" pan="-25.89" title="A14"/>
+      <hotspot skinid="ht_disponible" target="_blank" tilt="-60.14" description="A25-15&#xA;Vista parcial al Volcán&#xA;Superficie Total: 5000m²" url="1.700 UF" id="A15" pan="-10.23" title="A15"/>
+      <hotspot skinid="ht_disponible" target="_blank" tilt="-55.1" description="A25-16&#xA;Con vista al Volcán&#xA;Superficie Total: 5000m²" url="2.000 UF" id="A16" pan="-19.13" title="A16"/>
+      <hotspot skinid="ht_disponible" target="_blank" tilt="-51.81" description="A25-17&#xA;Vista parcial al Volcán&#xA;Superficie Total: 5000m²" url="1.600 UF" id="A17" pan="-6.68" title="A17"/>
       <hotspot skinid="ht_disponible" target="_blank" tilt="-47.21" description="A25-18&#xA;Superficie Total: 5000m²" url="2.000 UF" id="A18" pan="-14.02" title="A18"/>
       <hotspot skinid="ht_noDisponible" target="_blank" tilt="-46.24" description="A24-1&#xA;Superficie Total:  63606 m²" url="Vendido" id="B1" pan="-193.08" title="B1"/>
       <hotspot skinid="ht_noDisponible" target="_blank" tilt="-51.4" description="A24-2&#xA;Superficie Total: 5000m²" url="Vendido" id="B2" pan="-186.83" title="B2"/>

@@ -80,8 +80,10 @@
       const status = statusLotFilter ? statusLotFilter.value : 'all';
 
       const filtered = hotspotsXML.filter(hotspot => {
+        const info = parseDescription(hotspot.description, hotspot.id);
         const matchesQuery = hotspot.id.toLowerCase().includes(query) || 
-                             (hotspot.description && hotspot.description.toLowerCase().includes(query));
+                             (info.description && info.description.toLowerCase().includes(query)) ||
+                             (info.comment && info.comment.toLowerCase().includes(query));
         const matchesStatus = status === 'all' || hotspot.skinid === status;
         
         return matchesQuery && matchesStatus;
@@ -221,6 +223,7 @@
         if (desc && desc.trim().startsWith('{') && desc.trim().endsWith('}')) {
           const data = JSON.parse(desc);
           return {
+            description: data.description || '',
             comment: data.comment || '',
             owner: data.owner || '',
             saleDate: data.saleDate || '',
@@ -230,6 +233,7 @@
       } catch (e) {}
       
       const lines = desc ? desc.split('\n').map(l => l.trim()).filter(Boolean) : [];
+      let description = '';
       let comment = '';
       let area = '5000';
       let owner = '';
@@ -238,7 +242,7 @@
       if (lines.length > 0) {
         const lastLine = lines[lines.length - 1].toLowerCase();
         if (lastLine.includes('superficie') || lastLine.includes('mts') || lastLine.includes('m²')) {
-          area = lastLine.replace(/[^\d]/g, '');
+          area = lastLine.replace(/[^\d]/g, '') || '5000';
           if (lines.length > 2) {
             comment = lines.slice(1, lines.length - 1).join('\n');
           } else if (lines.length === 2) {
@@ -254,6 +258,7 @@
       }
 
       return {
+        description,
         comment,
         owner,
         saleDate,
@@ -334,7 +339,8 @@
           row.className = 'hover:bg-slate-900/30 transition-colors';
           row.innerHTML = `
             <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-white">${realNomenclature} <span class="text-xs text-slate-500 font-normal">(${hotspot.id})</span></td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300 max-w-xs truncate" title="${info.comment || 'Sin comentarios'}">${info.comment || 'Sin comentarios'}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300 max-w-xs truncate" title="${info.description || 'Sin descripción'}">${info.description || '<span class="text-slate-600 italic">Sin descripción</span>'}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400 max-w-xs truncate" title="${info.comment || 'Sin notas internas'}">${info.comment || '<span class="text-slate-600 italic">Sin notas</span>'}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">${info.area || '5000'} m²</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">${info.owner || '-'}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400">${info.saleDate || '-'}</td>
@@ -429,14 +435,15 @@
           ownerHtml = `<p class="text-[10px] text-amber-400 font-semibold truncate" title="Reserva: ${info.owner}">Res: ${info.owner}</p>`;
         }
 
-        card.className = `glass-panel ${bgClass} ${borderClass} rounded-2xl p-4 flex flex-col justify-between h-44 border transition-all duration-300 hover:scale-[1.02] cursor-pointer group`;
+        card.className = `glass-panel ${bgClass} ${borderClass} rounded-2xl p-4 flex flex-col justify-between h-48 border transition-all duration-300 hover:scale-[1.02] cursor-pointer group`;
         card.innerHTML = `
           <div class="flex justify-between items-start">
             <span class="text-lg font-bold text-white group-hover:text-amber-500 transition-colors">${realNomenclature}</span>
             <span class="text-[10px] px-2 py-0.5 rounded-full font-semibold ${textClass} border ${borderClass} uppercase tracking-wider">${statusLabel}</span>
           </div>
           <div class="space-y-0.5">
-            <p class="text-xs text-slate-400 truncate" title="${info.comment || 'Sin comentarios'}">${info.comment || 'Sin comentarios'}</p>
+            <p class="text-xs text-slate-300 truncate" title="Descripción: ${info.description || 'Sin descripción'}"><i class="fas fa-info-circle text-amber-500/70 mr-1"></i>${info.description || 'Sin descripción'}</p>
+            <p class="text-xs text-slate-400 truncate" title="Notas: ${info.comment || 'Sin notas'}"><i class="fas fa-sticky-note text-slate-500 mr-1"></i>${info.comment || 'Sin notas'}</p>
             <p class="text-xs text-slate-500">Superficie: ${info.area || '5000'} m²</p>
             ${ownerHtml}
             <p class="text-sm font-bold text-slate-100">${formatPriceFromDB(hotspot.url)}</p>
@@ -478,6 +485,8 @@
             }
 
             titleInput.value = formatPriceFromDB(lot.url);
+            const descInput = document.getElementById('descripcionInput');
+            if (descInput) descInput.value = info.description || '';
             document.getElementById('comentarioInput').value = info.comment || '';
             document.getElementById('superficieInput').value = info.area || '5000';
             document.getElementById('propietarioInput').value = info.owner || '';
@@ -505,13 +514,15 @@
         const priceInputStr = document.getElementById('titleInput').value;
         const price = parsePriceToDB(priceInputStr);
         
-        const comment = document.getElementById('comentarioInput').value;
-        const area = document.getElementById('superficieInput').value || '5000';
-        const owner = document.getElementById('propietarioInput').value;
+        const descInput = document.getElementById('descripcionInput');
+        const description = descInput ? descInput.value.trim() : '';
+        const comment = document.getElementById('comentarioInput').value.trim();
+        const area = document.getElementById('superficieInput').value.trim() || '5000';
+        const owner = document.getElementById('propietarioInput').value.trim();
         const saleDate = document.getElementById('fechaVentaInput').value;
         const status = document.getElementById('skinIDSelect').value;
         
-        const descriptionJSON = JSON.stringify({ comment, area, owner, saleDate });
+        const descriptionJSON = JSON.stringify({ description, comment, area, owner, saleDate });
     
         const data = {
           lotId: currentLoteId,

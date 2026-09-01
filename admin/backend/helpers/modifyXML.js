@@ -91,7 +91,12 @@ const cleanDescriptionForXML = (desc, lotId) => {
       const prefix = lotId && lotId.startsWith('B') ? 'A24-' : 'A25-';
       const num = lotId ? lotId.replace(/\D/g, '') : '';
       const nomenclature = `${prefix}${num}`;
-      return `${nomenclature}\nSuperficie Total: ${data.area || '5000'}m²`;
+      const parts = [nomenclature];
+      if (data.description && data.description.trim()) {
+        parts.push(data.description.trim());
+      }
+      parts.push(`Superficie Total: ${data.area || '5000'}m²`);
+      return parts.join('\n');
     }
   } catch (e) {}
   
